@@ -16,7 +16,7 @@ module.exports = Blog
 app.use(cors())
 app.use(bodyParser.json())
 
-const mongoUrl = 'mongodb://localhost/bloglist'
+const mongoUrl = 'mongodb://blogger:password@ds039427.mlab.com:39427/blogilista'
 mongoose.connect(mongoUrl)
 mongoose.Promise = global.Promise
 
