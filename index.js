@@ -2,29 +2,22 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const mongoose = require('mongoose')
-
-const Blog = mongoose.model('Blog', {
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-module.exports = Blog
+const Blog = require('./models/blog')
 
 app.use(cors())
 app.use(bodyParser.json())
 
-const mongoUrl = 'mongodb://blogger:password@ds039427.mlab.com:39427/blogilista'
-mongoose.connect(mongoUrl)
-mongoose.Promise = global.Promise
+
 
 app.get('/api/blogs', (request, response) => {
   Blog
     .find({})
     .then(blogs => {
       response.json(blogs)
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(404).end()
     })
 })
 
@@ -35,6 +28,10 @@ app.post('/api/blogs', (request, response) => {
     .save()
     .then(result => {
       response.status(201).json(result)
+    })
+    .catch(error=> {
+      console.log(error)
+      response.status(404).end()
     })
 })
 
