@@ -5,36 +5,76 @@ const formatBlog = (blog) => {
 	return {
 		id: blog._id,
 		title: blog.title,
-  		author: blog.author,
-  		url: blog.url,
-  		likes: blog.likes
+  	author: blog.author,
+  	url: blog.url,
+  	likes: blog.likes
 	}
 }
 
-blogsRouter.get('/', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs.map(formatBlog))
-    })
-    .catch(error => {
-      console.log(error)
-      response.status(404).end()
-    })
+blogsRouter.get('/', async (request, response) => {
+  try {
+    const blogs = await Blog.find({})
+    response.json(blogs.map(formatBlog))
+  } catch (exception) {
+    console.log(exception)
+    response.status(400).send({error:'Something went wrong'})
+
+  }
 })
 
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
+blogsRouter.post('/', async  (request, response) => {
+  try {
+    const body = request.body
 
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
+    if (body.title === undefined || body.url === undefined){
+      return response.status(400).json({error: 'Title or url missing!'})
+    }
+
+    const blog = new Blog ({
+      title: body.title,
+      author: body.author, 
+      url: body.url,
+      likes: body.likes || 0
     })
-    .catch(error=> {
-      console.log(error)
-      response.status(404).end()
-    })
+
+    const savedBlog = await blog.save()
+    response.json(formatBlog(savedBlog))
+  
+} catch (exception) {
+  console.log(exception)
+  response.status(400).send({error: 'Something went wrong'})
+}
+})
+
+blogsRouter.delete('/:id', async (request, response) => {
+  try {
+    await Blog.findByIdAndRemove(request.params.id)
+
+    response.status(204).end()
+  } catch (exception) {
+      console.log(exception)
+      response.status(400).send({ error: 'Something went wrong' })
+  }
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+  try {
+    const body = request.body
+
+    const blog = {
+      title: body.title,
+      author: body.author, 
+      url: body.url,
+      likes: body.likes || 0
+    }
+
+    await Blog.findByIdAndUpdate(request.params.id, blog, { new: true} )
+    response.status(200).end()
+
+  } catch (exception) {
+    console.log(exception)
+    response.status(400).send({ error: 'Something went wrong' })
+  }
 })
 
 module.exports = blogsRouter
