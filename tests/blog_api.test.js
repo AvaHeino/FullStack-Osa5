@@ -2,7 +2,8 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { formatBlog, testBlogs, blogsInDb } = require('./test_helpers')
+const User = require('../models/user')
+const { formatBlog, testBlogs, blogsInDb, usersInDb } = require('./test_helpers')
 
 describe('When there is initially some blogs saved', async () => {
 	beforeAll(async () => {
@@ -120,6 +121,42 @@ describe('Adding a new blog', async () => {
 
 	})
  })
+
+describe.only('when there is initially one user at db', async () => {
+	beforeAll(async () => {
+		await User.remove({})
+		const user = new User({ 
+			username: 'root',
+			name: 'Jane Doe',
+			password: 'secret',
+			adult: true
+		})
+		await user.save()
+	})
+
+
+	test('POST /api/users succeeds with a new username', async () => {
+		const usersBeforeOperation = await usersInDb()
+
+		const newUser = {
+			username: 'testUser',
+			name: 'John Doe',
+			password: 'testSecret',
+			adult: false
+		}
+
+		await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(200)
+			.expect('Content-Type',/application\/json/)
+
+		const usersAfterOperation = await usersInDb()
+		expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
+		const usernames = usersAfterOperation.map(u => u.username)
+		expect(usernames).toContain(newUser.username)
+	})
+})
 
 
 afterAll(()=> {
