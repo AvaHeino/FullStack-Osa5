@@ -156,6 +156,48 @@ describe.only('when there is initially one user at db', async () => {
 		const usernames = usersAfterOperation.map(u => u.username)
 		expect(usernames).toContain(newUser.username)
 	})
+
+	test('POST api/users fails with proper statuscode and message if username is already taken', async () => {
+		const usersBeforeOperation = await usersInDb()
+
+		const newUser = {
+			username: 'root',
+			name: 'Lisa Anonym',
+			password: 'salainen'
+		}
+
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/)
+
+		expect(result.body).toEqual({ error: 'username must be unique'})
+
+		const usersAfterOperation = await usersInDb()
+		expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+	})
+
+	test('POST api/users fails with proper statuscode and message if password is too short', async () => {
+		const usersBeforeOperation = await usersInDb()
+
+		const newUser = {
+			username: 'passwordGuy',
+			name: 'Matti Matikainen',
+			password: 'aa'
+		}
+
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type, /application\/json/')
+
+		expect(result.body).toEqual({error: 'Password must be at least 3 characters long'})
+
+		const usersAfterOperation = await usersInDb()
+		expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+	})
 })
 
 
