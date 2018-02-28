@@ -44,7 +44,10 @@ class App extends React.Component {
       blogService.setToken(user.token)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       
-      this.setState({ username: '', password: '', user})
+      this.setState({ username: '', password: '', user, error: 'User succesfully logged in'})
+      setTimeout(()=> {
+        this.setState({ error: null})
+      }, 5000)
       
     } catch (exception){
       this.setState({
@@ -71,8 +74,16 @@ class App extends React.Component {
       .then(newBlog => {
         this.setState({
           blogs: this.state.blogs.concat(newBlog),
-          newBlog: ''
+          title: '',
+          author: '',
+          url: '',
+          likes: '',
+          error: 'Blog succesfully added!'
         })
+        setTimeout(() => {
+        this.setState({ error: null })
+      }, 5000)
+
       }) 
   }
 
@@ -183,6 +194,7 @@ class App extends React.Component {
       )
     return (
       <div>
+      <p>{this.state.error}</p>
         {this.state.user === null ?
           loginForm() :
           <div>
