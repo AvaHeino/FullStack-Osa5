@@ -1,5 +1,7 @@
 import React from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -142,30 +144,19 @@ class App extends React.Component {
       </div>
     )
 
-    const blogForm = () => {
-      const hideWhenVisible = { display: this.state.blogformVisible ? 'none' : ''}
-      const showWhenVisible = { display: this.state.blogformVisible ? '' : 'none'}
-
-      return (
-        <div>
-          <div style = {hideWhenVisible}>
-            <button onClick={e => this.setState({blogformVisible:true})}>lisaa blogi</button>
-          </div>
-          <div style= {showWhenVisible}>
-            <BlogForm
-              visible={this.state.blogformVisible}
-              title={this.state.title}
-              author={this.state.author}
-              url={this.state.url}
-              likes={this.state.likes}
-              handleChange={this.handleBlogChange}
-              handleSubmit={this.addBlog}
-            />
-            <button onClick={e => this.setState({ blogformVisible: false})}>cancel</button>
-          </div>
-        </div>
-        )
-    }
+    const blogForm = () => (
+      <Togglable buttonLabel='Lisaa blogi'>
+        <BlogForm
+          visible = {this.state.blogformVisible}
+          title = {this.state.title}
+          author = {this.state.author}
+          url = {this.state.url}
+          likes = {this.state.likes}
+          handleChange = {this.handleBlogChange}
+          handleSubmit = {this.addBlog}
+        />
+      </Togglable>
+    )
     
     return (
       <div>
@@ -182,47 +173,5 @@ class App extends React.Component {
   }
 }
 
-const BlogForm = ({handleSubmit, handleChange, title, author, url, likes }) => {
-   return(
-      <div>
-        <h2>Lisaa uusi blogi</h2> 
-        <form onSubmit = {handleSubmit}>
-          <div>
-          Blog Title
-           <input 
-           name = "title"
-           value = {title}
-           onChange = {handleChange}
-           />
-          </div>
-          <div>
-            Author 
-            <input
-              name = "author"
-              value = {author}
-              onChange = {handleChange}
-            />
-          </div>
-          <div>
-            URL 
-            <input
-              name = "url"
-              value = {url}
-              onChange = {handleChange}
-            />
-          </div>
-          <div>
-            Likes 
-            <input
-              name = "likes"
-              value = {likes}
-              onChange = {handleChange}
-            />
-          </div>
-          <button type='submit'>Tallenna</button>
-        </form>
-      </div>
-      )
-}
 
 export default App;
