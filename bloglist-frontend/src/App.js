@@ -104,6 +104,12 @@ class App extends React.Component {
     this.setState({ user: null })
   }
 
+  addALikeTo = (id) => {
+    return() => {
+      
+    }
+  }
+
   render() {
     const loginForm = () => (
     <div>
