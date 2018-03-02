@@ -42,6 +42,7 @@ class Blog extends React.Component {
 					<p>{this.props.likes} likes </p> 
 					<button onClick={this.props.addLike(this.props.id)}>like</button>
 					<p>Added by {this.props.user} </p>
+					<button onClick={this.props.remove(this.props.id)}>delete</button>
 				</div>
 			</div>
 			)

@@ -112,12 +112,25 @@ class App extends React.Component {
         .update(id, changedBlog)
         .then(changedBlog => {
           this.setState({
-            blogs: this.state.blogs.map(blog => blog.id !== id ? blog : changedBlog)
+            blogs: this.state.blogs.map(blog => blog._id !== id ? blog : changedBlog)
           })
-          
+
         })
         .catch(error => {
           console.log(error)
+        })
+    }
+  }
+
+  removeBlog = (id) => {
+    return() => {
+      const blog = this.state.blogs.find(b => b._id === id)
+      blogService
+        .remove(id)
+        .then(response => {
+          this.setState({
+            blogs: this.state.blogs.filter(blog => blog._id !== id)
+          })
         })
     }
   }
@@ -149,6 +162,21 @@ class App extends React.Component {
       </form>
     </div>
     )
+
+    const sortBlogs = () => {
+      let sortedBlogs = this.state.blogs.sort(function(a, b) {
+        return a.likes - b.likes
+      })
+      sortedBlogs.reverse()
+
+      sortedBlogs = sortedBlogs.map(blog => 
+          <Blog key={blog._id} title={blog.title} author={blog.author} url={blog.url} likes={blog.likes} user={blog.user.name} addLike={this.addALikeTo} remove = {this.removeBlog} id={blog._id}/>
+        )
+      
+      return(sortedBlogs)
+
+    }
+
     const blogList = () => (
       <div>
         <p>{this.state.user.name}</p>
@@ -156,9 +184,7 @@ class App extends React.Component {
         kirjaudu ulos
         </button>
         <h2>blogs</h2>
-        {this.state.blogs.map(blog => 
-          <Blog key={blog._id} title={blog.title} author={blog.author} url={blog.url} likes={blog.likes} user={blog.user.name} addLike={this.addALikeTo} id={blog._id}/>
-        )}
+        {sortBlogs()}
       </div>
     )
 
