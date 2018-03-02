@@ -1,10 +1,5 @@
 import React from 'react'
 
-/*const Blog = ({blog}) => (
-  <div>
-    {blog.title} {blog.author}
-  </div>  
-)*/
 
 class Blog extends React.Component {
 	constructor (props) {
@@ -45,7 +40,7 @@ class Blog extends React.Component {
 					<h3 onClick ={this.toggleVisibility}>{this.props.title} {this.props.author}</h3>
 					<a href="{this.props.url}">{this.props.url}</a>
 					<p>{this.props.likes} likes </p> 
-					<button>like</button>
+					<button onClick={this.props.addLike(this.props.id)}>like</button>
 					<p>Added by {this.props.user} </p>
 				</div>
 			</div>

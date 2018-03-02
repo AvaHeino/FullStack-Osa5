@@ -106,7 +106,19 @@ class App extends React.Component {
 
   addALikeTo = (id) => {
     return() => {
-      
+      const blog = this.state.blogs.find(b => b._id === id)
+      const changedBlog = {...blog, likes: blog.likes + 1}
+      blogService
+        .update(id, changedBlog)
+        .then(changedBlog => {
+          this.setState({
+            blogs: this.state.blogs.map(blog => blog.id !== id ? blog : changedBlog)
+          })
+          
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 
@@ -145,7 +157,7 @@ class App extends React.Component {
         </button>
         <h2>blogs</h2>
         {this.state.blogs.map(blog => 
-          <Blog key={blog._id} title={blog.title} author={blog.author} url={blog.url} likes={blog.likes} user={blog.user.name}/>
+          <Blog key={blog._id} title={blog.title} author={blog.author} url={blog.url} likes={blog.likes} user={blog.user.name} addLike={this.addALikeTo} id={blog._id}/>
         )}
       </div>
     )
