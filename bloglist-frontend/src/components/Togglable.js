@@ -1,7 +1,11 @@
 import React from 'react'
 import BlogForm from './BlogForm'
+import PropTypes from 'prop-types'
 
 class Togglable extends React.Component {
+	static propTypes = {
+		buttonLabel: PropTypes.string.isRequired
+	}
 	constructor(props) {
 		super(props)
 		this.state = {

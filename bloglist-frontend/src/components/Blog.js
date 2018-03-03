@@ -1,7 +1,19 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 
 class Blog extends React.Component {
+	static propTypes = {
+		title: PropTypes.string.isRequired,
+		author: PropTypes.string.isRequired,
+		url: PropTypes.string.isRequired,
+		likes: PropTypes.number.isRequired,
+		addLike: PropTypes.func.isRequired,
+		remove: PropTypes.func.isRequired,
+		user: PropTypes.string.isRequired,
+		id: PropTypes.string.isRequired
+	}
+
 	constructor (props) {
 		super(props)
 		this.state = {
@@ -33,10 +45,10 @@ class Blog extends React.Component {
 
 		return (
 			<div>
-				<div style = {hideWhenVisible}>
+				<div className="title" style = {hideWhenVisible}>
 					<h3 onClick ={this.toggleVisibility}>{this.props.title} {this.props.author}</h3>
 				</div>
-				<div style = {showWhenVisible}>
+				<div className="details" style = {showWhenVisible}>
 					<h3 onClick ={this.toggleVisibility}>{this.props.title} {this.props.author}</h3>
 					<a href="{this.props.url}">{this.props.url}</a>
 					<p>{this.props.likes} likes </p> 

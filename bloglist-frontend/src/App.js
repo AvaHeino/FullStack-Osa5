@@ -19,19 +19,22 @@ class App extends React.Component {
       password: '',
       user: null,
       error: null,
-      blogformVisible: false
+      blogformVisible: false,
+      userName: ''
     }
   }
 
   componentDidMount() {
-    blogService.getAll().then(blogs =>
-      this.setState({ blogs })
+    blogService
+      .getAll()
+      .then(blogs =>
+        this.setState({ blogs })
     )
 
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      this.setState({user})
+      this.setState({ user })
       blogService.setToken(user.token)
     }
   } 
@@ -124,6 +127,7 @@ class App extends React.Component {
 
   removeBlog = (id) => {
     return() => {
+      if(window.confirm("Do you really want to remove this blog?")){
       const blog = this.state.blogs.find(b => b._id === id)
       blogService
         .remove(id)
@@ -132,12 +136,16 @@ class App extends React.Component {
             blogs: this.state.blogs.filter(blog => blog._id !== id)
           })
         })
+    } else {
+
     }
   }
+  } 
+  
 
   render() {
     const loginForm = () => (
-    <div>
+    <div className="kirjaudu">
       <h2>Kirjaudu</h2>
       <form onSubmit = {this.login}>
         <div>
